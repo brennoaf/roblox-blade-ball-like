@@ -15,7 +15,7 @@ body{
 }
 
 main{
-    width: 600px;
+    width: 900px;
     height: 600px;
     padding: 1em;
     background-color: red;
@@ -39,6 +39,7 @@ main{
 }
 
 .player{
+    transition: 0.2s;
     display: flex;
     position: relative;
     align-items: center;
@@ -52,14 +53,26 @@ main{
 .player1-content{
     background-color: green;
 
-    }.p-atk-hitbox1{
+    }.p1-atk-hitbox{
         position: absolute;
         background-color: aquamarine;
         width: 25px;
         height: 60px;
         right: -2em;
 
-    }.p-damage-hitbox1{
+        }.weapon{
+            position: absolute;
+            left: -1em;
+            top: -1em;
+
+            width: 40px;
+
+            transition: .1s;
+            transform: rotate(30deg);
+            
+        }
+        
+    .p1-damage-hitbox{
         position: absolute;
         left: 10%;
         background-color: yellow;
@@ -71,7 +84,7 @@ main{
     background-color: blue;
     right: 0;
 
-    }.p-atk-hitbox2{
+    }.p2-atk-hitbox{
         position: absolute;
         background-color: aquamarine;
         width: 25px;

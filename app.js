@@ -1,14 +1,19 @@
-import * as gameEngine from './scripts/gameEngine.js'
+import * as gameEngine from './scripts/gameEngine.js';
+import * as animations from './scripts/animations.js';
+
 const player1Engine = new gameEngine.Player1();
 const player2Engine = new gameEngine.Player2();
 const botEngine = new gameEngine.Bot();
 const ballEngine = new gameEngine.Ball();
+const p1Animation = new animations.AnimationP1();
 
 var game = {
     engine: {
         player1: {
             content: document.getElementById('player1'),
-            atkHitbox: document.getElementById('p1-hitbox'),
+            atkHitbox: document.getElementById('p1-atk-hitbox'),
+            dmgHitbox: document.getElementById('p1-damage-hitbox'),
+            weapon: document.getElementById('p1-weapon'),
 
             X: 0,
             Y: 0,
@@ -18,7 +23,7 @@ var game = {
 
         player2: {
             content: document.getElementById('player2'),
-            atkHitbox: document.getElementById('p2-hitbox'),
+            atkHitbox: document.getElementById('p2-atk-hitbox'),
 
             X: 0,
             Y: 0,
@@ -83,26 +88,35 @@ game.assets.returnButton.addEventListener('click',
 
 
 //comandos do player 1
+var imune = false
 document.addEventListener("keydown",
     (event) => {
+        console.log(event)
         const keyName = event.key;
         
         let isTouching
-        if (keyName === "Control") {
+        if (keyName === "Alt") {
 
+            //criando variavel para retornar um boolean se tive no hitbox do atk
             let touching = player1Engine.atkHitboxP1(
                 isTouching,
                 game.engine.player1.atkHitbox,
                 game.engine.ball.content
             )
 
+            //se tiver tocando...
             if(touching){
                 if (game.engine.ball.speed > 0.3){
                     game.engine.ball.speed = game.engine.ball.speed * 0.95
                     game.engine.ball.content.style.transition = game.engine.ball.speed + 's';
                     
+                    imune = true;
+                    setTimeout(() => {
+                        imune = false;
+                    }, game.engine.ball.speed - 0.05);
                 }
                 
+                //resposta do bot (ajeitar pra deixar o bot opcional depois)
                 botEngine.botResponse(
                     game.engine.ball.speed,
                     game.engine.ball.content,
@@ -122,6 +136,8 @@ document.addEventListener("keydown",
                     game.engine.player2.step
                 )
             }
+            
+            p1Animation.attack(game.engine.player1.weapon)
         }
 
             
@@ -135,6 +151,8 @@ document.addEventListener("keydown",
             )
             game.engine.player1.X = posX
             game.engine.player1.Y = posY
+
+
 
     },
     false,
@@ -183,3 +201,36 @@ document.addEventListener('keydown',
         game.engine.player2.Y = posY
 })
 
+
+game.engine.ball.content.addEventListener('transitionend', () =>{
+    let isTouching
+
+    let touching = player1Engine.dmgHitboxP1(
+        isTouching,
+        game.engine.player1.dmgHitbox,
+        game.engine.ball.content
+    )
+
+    if(touching){
+        location.reload()
+
+        }
+
+})
+
+game.engine.player1.content.addEventListener('transitionrun', () => {
+    let isTouching
+
+    let touching = player1Engine.dmgHitboxP1(
+        isTouching,
+        game.engine.player1.dmgHitbox,
+        game.engine.ball.content
+    )
+
+    if(!imune){
+        if(touching){
+        location.reload()
+        }
+    }
+
+})

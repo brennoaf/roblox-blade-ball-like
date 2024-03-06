@@ -14,24 +14,23 @@ export class Player1{
 
     playerControl(event, posX, posY, step, ballContent, player){
 
-        switch (event.key) {
-            case 'w':
+
+            if(event.key == 'w'){
                 posY -= step;
-                break;
-            case 'a':
+            }
+            if(event.key == 'a'){
                 posX -= step;
-                break;
-            case 's':
+            }
+            if(event.key == 's'){
                 posY += step;
-                break;
-            case 'd':
+            }
+            if(event.key == 'd'){
                 posX += step;
-                break;
-            default:
-                break;
-        }
+            }
+
 
         this.lookBall(posX, posY, ballContent, player)
+
         return { posX, posY }
     }
 
@@ -53,6 +52,28 @@ export class Player1{
         }else{
             touching = false
             console.log('nao')
+        }
+
+        return(touching)
+    }
+
+    dmgHitboxP1(touching, hitbox1, ball){
+        touching = false
+
+        let hb1Rect = hitbox1.getBoundingClientRect();
+        let hbBall = ball.getBoundingClientRect();
+
+        if (
+            hb1Rect.right > hbBall.left && 
+            hb1Rect.left < hbBall.right && 
+            hb1Rect.bottom > hbBall.top &&
+            hb1Rect.top < hbBall.bottom
+            ){
+                touching = true
+
+        }else{
+            touching = false
+
         }
 
         return(touching)
@@ -160,22 +181,14 @@ export class Ball{
         const normalizedDeltaX = (deltaX / distance) * step;
         const normalizedDeltaY = (deltaY / distance) * step;
 
-        posX += normalizedDeltaX - 270;
+        posX += normalizedDeltaX - 410;
         posY += normalizedDeltaY;
     
         ball.style.transform = `translate(${posX}px, ${posY}px)`;
         /////////////////////////////////////////////////////////////////
 
         //fazendo a bola continuar seguindo
-            let i = setInterval(function(){
-                console.log('oi')
-                lookBall(posX, posY, ball, player)
-            }, 200)
-
-            setTimeout(function(){
-                console.log('fim!')
-                clearInterval(i)
-            }, 1000)
+ 
         }
     
 
@@ -195,7 +208,7 @@ export class Ball{
         const normalizedDeltaX = (deltaX / distance) * step;
         const normalizedDeltaY = (deltaY / distance) * step;
 
-        posX += normalizedDeltaX + 250;
+        posX += normalizedDeltaX + 400;
         posY += normalizedDeltaY;
     
         function move() {
