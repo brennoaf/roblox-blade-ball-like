@@ -1,0 +1,104 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+body{
+    display: flex;
+    min-height: 100vh;
+
+    justify-content: center;
+    align-items: center;
+
+}
+
+main{
+    width: 600px;
+    height: 600px;
+    padding: 1em;
+    background-color: red;
+
+}
+
+.game-content{
+    
+    width: 100%;
+    height: 100%;
+    background-color: gray;
+}
+
+.players-area{
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.player{
+    display: flex;
+    position: relative;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+
+    background-color: blue;
+
+}
+
+.player1-content{
+    background-color: green;
+
+    }.p-atk-hitbox1{
+        position: absolute;
+        background-color: aquamarine;
+        width: 25px;
+        height: 60px;
+        right: -2em;
+
+    }.p-damage-hitbox1{
+        position: absolute;
+        left: 10%;
+        background-color: yellow;
+        width: 30px;
+        height: 50%;
+    }
+
+.player2-content{
+    background-color: blue;
+    right: 0;
+
+    }.p-atk-hitbox2{
+        position: absolute;
+        background-color: aquamarine;
+        width: 25px;
+        height: 60px;
+        right: -2em;
+
+    }
+
+.ball-area{
+    display: flex;
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+
+}
+
+.ball{
+    position: relative;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+
+    transition: all 1s ease;
+    background-color: red;
+
+    border-radius: 50%;
+}
