@@ -42,6 +42,18 @@ var game = {
     }
 }
 
+window.onload = () =>{
+    //isso daqui fica atualizando o player de olhar pra bola
+    //(testar impactos que isso causa no pc e se tem maneiras mais eficazes)
+    setInterval(() =>{
+        player1Engine.lookBall(
+            game.engine.player1.X,
+                game.engine.player1.Y,
+                game.engine.ball.content,
+                game.engine.player1.content
+        )
+    }, 100)
+}
 
 
 game.assets.startButton.addEventListener('click', () => {
@@ -80,67 +92,26 @@ game.assets.returnButton.addEventListener('click',
         game.engine.player1.X,
         game.engine.player1.Y,
         game.engine.player1.step,
-        game.engine.player1.content,
-        player1Engine.lookBall
     )
 })
 
 
 
 //comandos do player 1
-var imune = false
 document.addEventListener("keydown",
     (event) => {
-        console.log(event)
-        const keyName = event.key;
-        
-        let isTouching
-        if (keyName === "Alt") {
 
-            //criando variavel para retornar um boolean se tive no hitbox do atk
-            let touching = player1Engine.atkHitboxP1(
-                isTouching,
-                game.engine.player1.atkHitbox,
-                game.engine.ball.content
+            player1Engine.Attack(
+                event,
+                game.engine.ball,
+                game.engine.player1,
+                game.engine.player2,
+                botEngine.botResponse,
+                ballEngine.moveToP1,
+                ballEngine.moveToP2
             )
 
-            //se tiver tocando...
-            if(touching){
-                if (game.engine.ball.speed > 0.3){
-                    game.engine.ball.speed = game.engine.ball.speed * 0.95
-                    game.engine.ball.content.style.transition = game.engine.ball.speed + 's';
-                    
-                    imune = true;
-                    setTimeout(() => {
-                        imune = false;
-                    }, game.engine.ball.speed - 0.05);
-                }
-                
-                //resposta do bot (ajeitar pra deixar o bot opcional depois)
-                botEngine.botResponse(
-                    game.engine.ball.speed,
-                    game.engine.ball.content,
-                    game.engine.player1.content,
-                    game.engine.player1.X,
-                    game.engine.player1.Y,
-                    game.engine.player1.step,
-                    ballEngine.moveToP1
-                )
-                
-                
-                ballEngine.moveToP2(
-                    game.engine.ball.content,
-                    game.engine.player2.content,
-                    game.engine.player2.X,
-                    game.engine.player2.Y,
-                    game.engine.player2.step
-                )
-            }
-            
-            p1Animation.attack(game.engine.player1.weapon)
-        }
 
-            
             const { posX, posY } = player1Engine.playerControl(
                 event,
                 game.engine.player1.X,
@@ -227,7 +198,10 @@ game.engine.player1.content.addEventListener('transitionrun', () => {
         game.engine.ball.content
     )
 
-    if(!imune){
+    let oi = player1Engine.checkImune()
+    console.log(oi)
+    if(!player1Engine.checkImune()){
+
         if(touching){
         location.reload()
         }

@@ -1,4 +1,8 @@
+import * as animations from './animations.js'
+const animationP1 = new animations.AnimationP1();
+
 export class Player1{
+
     lookBall(posX, posY, ballContent, player){
         const ballRect = ballContent.getBoundingClientRect();
         const playerRect = player.getBoundingClientRect();
@@ -9,38 +13,103 @@ export class Player1{
         const angle = Math.atan2(dy, dx) * 180 / Math.PI; // Converte radianos para graus
 
         player.style.transform = `translate(${posX}px, ${posY}px) rotate(${angle}deg)`;
+        return angle
 
     }
 
     playerControl(event, posX, posY, step, ballContent, player){
 
-
-            if(event.key == 'w'){
+        //controles (ajeitar isso pelo amor)
+        switch (event.key) {
+            case 'w':
                 posY -= step;
-            }
-            if(event.key == 'a'){
+                break;
+            case 'a':
                 posX -= step;
-            }
-            if(event.key == 's'){
+                break;
+            case 's':
                 posY += step;
-            }
-            if(event.key == 'd'){
+                break;
+            case 'd':
                 posX += step;
-            }
-
+                break;
+            default:
+                break;
+        }
 
         this.lookBall(posX, posY, ballContent, player)
 
         return { posX, posY }
     }
+    
+    imune = false
+    checkImune(){
+        return this.imune  
+    }
 
+    setImune(imune){
+        this.imune = imune
+    }
 
-    atkHitboxP1(touching, hitbox1, ball){
+    Attack(event, ball, player1, player2, botResponse, moveToP1, moveToP2){
+
+        let isTouching
+        if (event.key === "Shift") {
+
+            //criando variavel para retornar um boolean se tive no hitbox do atk
+            let touching = this.atkHitbox(
+                isTouching,
+                player1.atkHitbox,
+                ball.content
+            )
+
+            //se tiver tocando...
+            if(touching){
+                if (ball.speed > 0.3){
+                    ball.speed = ball.speed * 0.95
+                    ball.content.style.transition = ball.speed + 's';
+                    
+                    this.setImune(true)
+
+                    setTimeout(() => {
+
+                        this.setImune(false)
+                    }, ball.speed * 1000);
+                }
+                
+                //resposta do bot (ajeitar pra deixar o bot opcional depois)
+                botResponse(
+                    ball.speed,
+                    ball.content,
+                    player1.content,
+                    player1.X,
+                    player1.Y,
+                    player1.step,
+                    moveToP1
+                )
+                
+                
+                moveToP2(
+                    ball.content,
+                    player2.content,
+                    player2.X,
+                    player2.Y,
+                    player2.step
+                )
+            }
+            
+            animationP1.attack(player1.weapon)
+        }
+        return { ball }
+    }
+
+    atkHitbox(touching, hitbox1, ball){
         touching = false
 
         let hb1Rect = hitbox1.getBoundingClientRect();
         let hbBall = ball.getBoundingClientRect();
 
+        //checa se uma div ta em cima da outra (testando se é realmente eficaz)
         if (
             hb1Rect.right > hbBall.left && 
             hb1Rect.left < hbBall.right && 
@@ -162,10 +231,8 @@ export class Bot{
 
 
 export class Ball{
-    player1 = new Player1();
-    player2 = new Player2();
 
-     moveToP1(ball, p1, posX, posY, step, player, lookBall) {
+     moveToP1(ball, p1, posX, posY, step,) {
         console.log('Indo até P1');
 
 
