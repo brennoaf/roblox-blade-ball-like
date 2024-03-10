@@ -17,29 +17,33 @@ export class Player1{
 
     }
 
-    playerControl(event, posX, posY, step, ballContent, player){
+    //playerControl(event, posX, posY, step, ballContent, player){
 
         //controles (ajeitar isso pelo amor)
-        switch (event.key) {
-            case 'w':
-                posY -= step;
-                break;
-            case 'a':
-                posX -= step;
-                break;
-            case 's':
-                posY += step;
-                break;
-            case 'd':
-                posX += step;
-                break;
-            default:
-                break;
-        }
+        //switch (event.key) {
+        //    case 'w':
+        //        posY -= step;
+        //        break;
+        //    case 'a':
+        //        posX -= step;
+        //        break;
+        //    case 's':
+        //        posY += step;
+        //        break;
+        //    case 'd':
+        //        posX += step;
+        //        break;
+        //    default:
+        //        break;
+        //}
 
-        this.lookBall(posX, posY, ballContent, player)
+        //this.lookBall(posX, posY, ballContent, player)
 
-        return { posX, posY }
+        //return { posX, posY }
+    //}
+
+    sprint(){
+
     }
     
     imune = false
@@ -51,10 +55,16 @@ export class Player1{
         this.imune = imune
     }
 
-    Attack(event, ball, player1, player2, botResponse, moveToP1, moveToP2){
+
+    sprint(event){
+        if(event.key == 'Q'){}
+    }
+
+
+    attack(ball, player1, player2, botResponse, moveToP1, moveToP2, keysPressed){
 
         let isTouching
-        if (event.key === "Shift") {
+
 
             //criando variavel para retornar um boolean se tive no hitbox do atk
             let touching = this.atkHitbox(
@@ -97,10 +107,13 @@ export class Player1{
                     player2.step
                 )
             }
-            
+            for (const key in keysPressed) {
+                if (keysPressed.hasOwnProperty(key)) {
+                    delete keysPressed[key];
+                }
+            }
             animationP1.attack(player1.weapon)
-        }
-        return { ball }
+        return { ball, keysPressed }
     }
 
     atkHitbox(touching, hitbox1, ball){

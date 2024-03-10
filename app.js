@@ -17,7 +17,9 @@ var game = {
 
             X: 0,
             Y: 0,
-            step: 10
+            step: 3,
+            stepX: 0,
+            stepY: 0
 
         },
 
@@ -27,7 +29,9 @@ var game = {
 
             X: 0,
             Y: 0,
-            step: 10
+            step: 10,
+            stepX: 0,
+            stepY: 0
         },
         ball: {
             content: document.getElementById('ball'),
@@ -97,37 +101,49 @@ game.assets.returnButton.addEventListener('click',
 
 
 
-//comandos do player 1
-document.addEventListener("keydown",
-    (event) => {
+var keysPressed = {};
 
-            player1Engine.Attack(
-                event,
+function moverP1(){
+    if(keysPressed['d']){game.engine.player1.X += game.engine.player1.step}
+    if(keysPressed['a']){game.engine.player1.X -= game.engine.player1.step}
+    if(keysPressed['s']){game.engine.player1.Y += game.engine.player1.step}
+    if(keysPressed['w']){game.engine.player1.Y -= game.engine.player1.step}
+
+    if(keysPressed['q'] && keysPressed['d']){
+        game.engine.player1.X += 10
+        setTimeout(() => {keysPressed['q'] = false}, 100)
+    }
+
+    requestAnimationFrame(moverP1);
+    }
+
+
+/////////////////////////////////
+//comandos do player 1
+addEventListener("keydown",
+    (event) => {
+            keysPressed[event.key] = true;
+
+            if(keysPressed['Shift']){player1Engine.attack(
                 game.engine.ball,
                 game.engine.player1,
                 game.engine.player2,
                 botEngine.botResponse,
                 ballEngine.moveToP1,
-                ballEngine.moveToP2
-            )
-
-
-            const { posX, posY } = player1Engine.playerControl(
-                event,
-                game.engine.player1.X,
-                game.engine.player1.Y,
-                game.engine.player1.step,
-                game.engine.ball.content,
-                game.engine.player1.content
-            )
-            game.engine.player1.X = posX
-            game.engine.player1.Y = posY
-
-
-
+                ballEngine.moveToP2,
+                keysPressed
+            )}
+                console.log(keysPressed)
+            
     },
     false,
 )
+
+/////////////////////////////////
+
+
+
+
 
 //comandos player 2
 document.addEventListener('keydown', 
@@ -172,6 +188,13 @@ document.addEventListener('keydown',
         game.engine.player2.Y = posY
 })
 
+/////////////////////////////////
+
+//encerrando comandos de andar
+document.addEventListener('keyup', (e) => {
+    keysPressed[e.key] = false;
+})
+
 
 game.engine.ball.content.addEventListener('transitionend', () =>{
     let isTouching
@@ -198,8 +221,6 @@ game.engine.player1.content.addEventListener('transitionrun', () => {
         game.engine.ball.content
     )
 
-    let oi = player1Engine.checkImune()
-    console.log(oi)
     if(!player1Engine.checkImune()){
 
         if(touching){
@@ -208,3 +229,5 @@ game.engine.player1.content.addEventListener('transitionrun', () => {
     }
 
 })
+
+moverP1()
