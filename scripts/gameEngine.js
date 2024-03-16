@@ -17,34 +17,7 @@ export class Player1{
 
     }
 
-    //playerControl(event, posX, posY, step, ballContent, player){
 
-        //controles (ajeitar isso pelo amor)
-        //switch (event.key) {
-        //    case 'w':
-        //        posY -= step;
-        //        break;
-        //    case 'a':
-        //        posX -= step;
-        //        break;
-        //    case 's':
-        //        posY += step;
-        //        break;
-        //    case 'd':
-        //        posX += step;
-        //        break;
-        //    default:
-        //        break;
-        //}
-
-        //this.lookBall(posX, posY, ballContent, player)
-
-        //return { posX, posY }
-    //}
-
-    sprint(){
-
-    }
     
     imune = false
     checkImune(){
@@ -56,20 +29,27 @@ export class Player1{
     }
 
 
+    setTarget(ball){
+        //settando pra onde jogar a bola
+        const queueHandle = ball.goingTo.shift();
+        ball.goingTo.push(queueHandle)
+
+        return ball.goingTo
+    }
+
     sprint(event){
         if(event.key == 'Q'){}
     }
 
 
-    attack(ball, player1, player2, botResponse, moveToP1, moveToP2, keysPressed){
+    attack(ball, thrower, target, keysPressed){
 
         let isTouching
-
 
             //criando variavel para retornar um boolean se tive no hitbox do atk
             let touching = this.atkHitbox(
                 isTouching,
-                player1.atkHitbox,
+                thrower.atkHitbox,
                 ball.content
             )
 
@@ -79,40 +59,31 @@ export class Player1{
                     ball.speed = ball.speed * 0.95
                     ball.content.style.transition = ball.speed + 's';
                     
-                    this.setImune(true)
-
-                    setTimeout(() => {
-
-                        this.setImune(false)
-                    }, ball.speed * 1000);
                 }
-                
-                //resposta do bot (ajeitar pra deixar o bot opcional depois)
-                botResponse(
-                    ball.speed,
-                    ball.content,
-                    player1.content,
-                    player1.X,
-                    player1.Y,
-                    player1.step,
-                    moveToP1
-                )
-                
-                
-                moveToP2(
-                    ball.content,
-                    player2.content,
-                    player2.X,
-                    player2.Y,
-                    player2.step
-                )
+
+                //settando imunidade
+                this.setImune(true)
+                setTimeout(() => {
+
+                    this.setImune(false)
+                }, ball.speed * 1000);
+
+            
+                console.log('atacando: ' + thrower.step + ' recebendo: ' + target.step)
+
+
+
+                this.setTarget(ball)
+            
             }
+
             for (const key in keysPressed) {
                 if (keysPressed.hasOwnProperty(key)) {
                     delete keysPressed[key];
                 }
             }
-            animationP1.attack(player1.weapon)
+
+
         return { ball, keysPressed }
     }
 
@@ -180,24 +151,7 @@ export class Player2{
 
     playerControl(event, posX, posY, step, ballContent, player){
 
-        switch (event.key) {
-            case 'ArrowUp':
-                posY -= step;
-                break;
-            case 'ArrowLeft':
-                posX -= step;
-                break;
-            case 'ArrowDown':
-                posY += step;
-                break;
-            case 'ArrowRight':
-                posX += step;
-                break;
-            default:
-                break;
-        }
-
-            this.lookBall(posX, posY, ballContent, player)
+        this.lookBall(posX, posY, ballContent, player)
         return { posX, posY }
     }
 
@@ -208,7 +162,7 @@ export class Player2{
         let hb2Rect = hitbox2.getBoundingClientRect();
         let hbBall = ball.getBoundingClientRect();
 
-        if (
+        if(
             hb2Rect.right > hbBall.left && 
             hb2Rect.left < hbBall.right && 
             hb2Rect.bottom > hbBall.top &&
@@ -297,4 +251,33 @@ export class Ball{
     
         window.requestAnimationFrame(move);
     }
+    
+
+    keepMoving(ball, target, posX, posY, step, stepX) {
+            console.log('oi');
+    
+    
+            //coisas que fazem a bola andar e se mexer
+            var deltaX = target.offsetLeft - ball.offsetLeft;
+            console.log(deltaX)
+            var deltaY = target.offsetTop - ball.offsetTop;
+    
+            //calculando a distância a partir de pitágoras na diferença
+            //da relação entre a esquerda e o top do player para a bola
+            const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+    
+            
+            const normalizedDeltaX = (deltaX / distance) * step;
+            const normalizedDeltaY = (deltaY / distance) * step;
+    
+            posX += normalizedDeltaX + stepX;
+            posY += normalizedDeltaY;
+
+            ball.style.transform = `translate(${posX}px, ${posY}px)`;
+            /////////////////////////////////////////////////////////////////
+    
+            //fazendo a bola continuar seguindo
+     
+    }
+
 }

@@ -90,6 +90,12 @@ main{
         height: 60px;
         right: -2em;
 
+    }.p2-damage-hitbox{
+        position: absolute;
+        left: 10%;
+        background-color: yellow;
+        width: 30px;
+        height: 50%;
     }
 
 .ball-area{
